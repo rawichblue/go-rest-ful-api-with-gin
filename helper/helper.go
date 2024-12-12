@@ -40,7 +40,7 @@ func GetUserByToken(ctx context.Context, tokenString string) (int64, error) {
 			return 0, err
 		}
 
-		return employee.ID, nil
+		return employee.Id, nil
 	}
 
 	return 0, errors.New("invalid token claims")

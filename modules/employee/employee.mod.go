@@ -4,14 +4,14 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type ProductModule struct {
+type EmployeeModule struct {
 	Ctl *EmployeeController
 	Svc *EmployeeService
 }
 
-func New(db *bun.DB) *ProductModule {
+func New(db *bun.DB) *EmployeeModule {
 	svc := newService(db)
-	return &ProductModule{
+	return &EmployeeModule{
 		Ctl: newController(svc),
 		Svc: svc,
 	}

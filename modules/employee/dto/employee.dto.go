@@ -8,7 +8,7 @@ type ReqCreateEmployee struct {
 	Email    string `form:"email" binding:"required"`
 	RoleId   int64  `form:"role_id" binding:"required"`
 	Address  string `form:"address"`
-	Phone    int64  `form:"phone"`
+	Phone    string `form:"phone"`
 }
 
 // type ReqCreateEmployee struct {
@@ -49,13 +49,13 @@ type Role struct {
 
 // Response
 type RespEmployee struct {
-	ID      int64  `json:"id"`
-	UserId  string `json:"userId"`
-	Email   string `json:"email"`
-	Name    string `json:"name"`
-	Images  string `json:"images"`
-	Role    Role   `json:"role"`
-	Address string `json:"address"`
-	Phone   int64  `json:"phone"`
-	// Password string `json:"password"`
+	ID       int64  `json:"id"`
+	UserID   string `json:"user_id"`
+	Email    string `json:"email"`
+	Name     string `json:"name"`
+	Images   string `json:"images"`
+	RoleID   string `json:"role_id"`
+	RoleName string `json:"role_name"`
+	Address  string `json:"address"`
+	Phone    int64  `json:"phone"`
 }

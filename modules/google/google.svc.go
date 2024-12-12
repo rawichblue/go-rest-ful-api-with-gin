@@ -14,9 +14,9 @@ func newService() *GoogleOAuthService {
 		oauth: nil,
 	}
 
-	kuy := os.Getenv("CLIENT_ID")
+	datalog := os.Getenv("CLIENT_ID")
 
-	log.Printf("kuy : %s", kuy)
+	log.Printf("datalog : %s", datalog)
 	if err := service.Register(context.Background(), os.Getenv("REDIRECT_URL"), os.Getenv("CLIENT_ID"), os.Getenv("CLIENT_SECRET")); err != nil {
 		panic(err)
 	}

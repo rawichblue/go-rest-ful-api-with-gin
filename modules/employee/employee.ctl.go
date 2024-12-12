@@ -129,11 +129,11 @@ func (c *EmployeeController) GetEmployeeById(ctx *gin.Context) {
 }
 
 // GetEmployeeList handles the request for listing employees with pagination and search
-func (c *EmployeeController) GetEmployeeList(ctl *gin.Context) {
+func (c *EmployeeController) GetEmployeeList(ctx *gin.Context) {
 	var req employeedto.ReqGetEmployeeList
 
-	if err := ctl.ShouldBindQuery(&req); err != nil {
-		response.BadRequest(ctl, "Invalid request data")
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		response.BadRequest(ctx, "Invalid request data")
 		return
 	}
 
@@ -144,13 +144,13 @@ func (c *EmployeeController) GetEmployeeList(ctl *gin.Context) {
 		req.Size = 10
 	}
 
-	employees, paginate, err := c.employeeSvc.GetList(ctl.Request.Context(), req)
+	employees, paginate, err := c.employeeSvc.GetList(ctx.Request.Context(), req)
 	if err != nil {
-		response.InternalError(ctl, err.Error())
+		response.InternalError(ctx, err.Error())
 		return
 	}
 
-	response.SuccessWithPaginate(ctl, employees, paginate)
+	response.SuccessWithPaginate(ctx, employees, paginate)
 }
 
 // func (c *EmployeeController) GetEmployeeList(ctx *gin.Context) {

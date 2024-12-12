@@ -14,10 +14,10 @@ func Api(r *gin.RouterGroup, mod *modules.Modules) {
 	auth := r.Group("/auth")
 	{
 		auth.GET("/getInfo", mod.Auth.Ctl.GetInfo)
+		// auth.POST("/register", mod.Auth.Ctl.Register)
 		auth.POST("/login", mod.Auth.Ctl.Login)
 		auth.GET("google/login", mod.Auth.Ctl.GoogleLogin)
 		auth.GET("google/callback", mod.Auth.Ctl.GoogleCallback)
-
 	}
 
 	protected := r.Group("/md")
@@ -25,7 +25,8 @@ func Api(r *gin.RouterGroup, mod *modules.Modules) {
 
 	employee := r.Group("/employee")
 	{
-		employee.POST("/create", middleware.Permission(1), mod.Employee.Ctl.CreateEmployee)
+		employee.POST("/create", mod.Employee.Ctl.CreateEmployee)
+		// employee.POST("/create", middleware.Permission(1), mod.Employee.Ctl.CreateEmployee)
 		employee.PATCH("/:id", middleware.Permission(2), mod.Employee.Ctl.UpdateEmployee)
 		employee.DELETE("/:id", middleware.Permission(3), mod.Employee.Ctl.DeleteEmployee)
 		employee.GET("/:id", mod.Employee.Ctl.GetEmployeeById)
@@ -34,10 +35,13 @@ func Api(r *gin.RouterGroup, mod *modules.Modules) {
 
 	role := protected.Group("/role")
 	{
+		role.GET("/list", mod.Role.Ctl.GetRoleList)
+		role.GET("/get-permission/:id", mod.Role.Ctl.GetPermission)
 		role.POST("/create", mod.Role.Ctl.CreateRole)
 		role.POST("/set-permission", mod.Role.Ctl.SetPermission)
-		role.GET("/get-permission/:id", mod.Role.Ctl.GetPermission)
+		role.PATCH("/:id", mod.Role.Ctl.UpdateRole)
 		role.DELETE("/:id", mod.Role.Ctl.DeleteRole)
+		role.PATCH("change-status/:id", mod.Role.Ctl.PermissionChangeStatus)
 		// role.PATCH("/:id", mod.Role.Ctl.UpdateRole)
 		// role.DELETE("/:id", mod.Role.Ctl.DeleteRole)
 		// role.GET("/:id", mod.Role.Ctl.GetRoleById)

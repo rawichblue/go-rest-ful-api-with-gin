@@ -42,7 +42,7 @@ func (s *PermissionService) PermissionList(ctx context.Context, req permissiondt
 
 	if req.Search != "" {
 		search := fmt.Sprintf("%%%s%%", req.Search)
-		query.Where("name ILIKE ? OR group ILIKE ? ", search, search)
+		query.Where(`name ILIKE ? OR "group" ILIKE ? `, search, search)
 	}
 
 	Count, err := query.Count(ctx)

@@ -32,11 +32,22 @@ func (c *RoleController) CreateRole(ctx *gin.Context) {
 
 	data, err := c.roleSvc.Create(ctx, req)
 	if err != nil {
-		response.BadRequest(ctx, err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code":    http.StatusInternalServerError,
+			"message": err.Error(),
+		})
 		return
 	}
+	// if err != nil {
+	// 	response.BadRequest(ctx, err.Error())
+	// 	return
+	// }
+	// response.Success(ctx, data)
 
-	response.Success(ctx, data)
+	ctx.JSON(http.StatusOK, gin.H{
+		"code": http.StatusOK,
+		"data": data,
+	})
 }
 
 func (c *RoleController) SetPermission(ctx *gin.Context) {
@@ -60,6 +71,7 @@ func (c *RoleController) SetPermission(ctx *gin.Context) {
 	response.Success(ctx, nil)
 }
 
+// ถ้าไม่มีขือ
 func (c *RoleController) GetPermission(ctx *gin.Context) {
 	req := roledto.ReqPermissionId{}
 	if err := ctx.BindUri(&req); err != nil {
@@ -77,7 +89,6 @@ func (c *RoleController) GetPermission(ctx *gin.Context) {
 		response.BadRequest(ctx, err.Error())
 		return
 	}
-
 	response.Success(ctx, data)
 }
 
@@ -91,11 +102,103 @@ func (c *RoleController) DeleteRole(ctx *gin.Context) {
 		return
 	}
 
-	err := c.roleSvc.DeleteRole(ctx, id)
+	data, err := c.roleSvc.DeleteRole(ctx, id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code":    http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"code": http.StatusOK,
+		"data": data,
+	})
+}
+
+func (c *RoleController) GetRoleList(ctx *gin.Context) {
+	var req roledto.ReqGetRoleList
+
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		response.BadRequest(ctx, "Invalid request data")
+		return
+	}
+
+	if req.Page <= 0 {
+		req.Page = 1
+	}
+	if req.Size <= 0 {
+		req.Size = 10
+	}
+
+	role, paginate, err := c.roleSvc.GetRoleList(ctx.Request.Context(), req)
 	if err != nil {
 		response.InternalError(ctx, err.Error())
 		return
 	}
+	response.SuccessWithPaginate(ctx, role, paginate)
+}
 
-	response.Success(ctx, nil)
+func (c *RoleController) UpdateRole(ctx *gin.Context) {
+	id := roledto.ReqPermissionId{}
+	if err := ctx.BindUri(&id); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	req := roledto.ReqCreateRole{}
+	if err := ctx.Bind(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	data, err := c.roleSvc.Update(ctx, id, req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code":    http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"code": http.StatusOK,
+		"data": data,
+	})
+}
+
+func (ctl *RoleController) PermissionChangeStatus(c *gin.Context) {
+	id := roledto.ReqPermissionId{}
+
+	if err := c.BindUri(&id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	status := roledto.ReqStatusRole{}
+	if err := c.Bind(&status); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	data, err := ctl.roleSvc.UpdateStatus(c, id, status)
+	if err != nil {
+		response.InternalError(c, err.Error())
+		return
+	}
+
+	response.Success(c, data)
 }

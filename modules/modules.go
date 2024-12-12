@@ -16,7 +16,7 @@ import (
 type Modules struct {
 	DB         *bun.DB
 	Product    *product.ProductModule
-	Employee   *employee.ProductModule
+	Employee   *employee.EmployeeModule
 	Auth       *auth.AuthModule
 	Role       *role.RoleModule
 	Permission *permission.PermissionModule

@@ -20,3 +20,13 @@ type ReqSetPermission struct {
 type ReqPermissionId struct {
 	Id int64 `uri:"id"`
 }
+
+type ReqGetRoleList struct {
+	Page   int    `form:"page"`
+	Size   int    `form:"size"`
+	Search string `form:"search"`
+}
+
+type ReqStatusRole struct {
+	IsActive bool `json:"is_active"`
+}

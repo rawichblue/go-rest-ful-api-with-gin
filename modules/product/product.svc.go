@@ -45,7 +45,7 @@ func (s *ProductService) Update(ctx context.Context, id productdto.GetProductByI
 	}
 
 	m := models.Product{
-		ID:          id.ID,
+		Id:          id.ID,
 		Name:        req.Name,
 		Price:       req.Price,
 		Description: req.Description,

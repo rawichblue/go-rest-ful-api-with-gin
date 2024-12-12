@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log"
 	"mime/multipart"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -91,7 +92,7 @@ func (s *EmployeeService) Update(ctx context.Context, id employeedto.ReqGetEmplo
 	}
 
 	m := models.Employee{
-		ID:       id.ID,
+		Id:       id.ID,
 		UserId:   req.UserId,
 		Email:    req.Email,
 		Password: req.Password,
@@ -150,18 +151,17 @@ func (s *EmployeeService) GetList(ctx context.Context, req employeedto.ReqGetEmp
 		offset = 0
 	}
 
-	query := s.db.NewSelect().TableExpr("employees As em").
+	query := s.db.NewSelect().TableExpr("employees AS em").
 		ColumnExpr("em.id ,em.user_id, em.email, em.name, em.images, em.address, em.phone").
-		ColumnExpr("r.name As role__name, r.id As role__id").
-		// ColumnExpr(`jsonb_build_object(
-		// 		'id', r.id,
-		// 		'name', r.name
-		// 	) AS role`).
-		Join("LEFT JOIN role As r On r.id = em.role_id")
+		ColumnExpr("r.name AS role_name").
+		ColumnExpr("r.id AS role_id").
+		Join("LEFT JOIN role AS r On r.id = em.role_id").
+		Where("em.deleted_at IS NULL")
 
 	if req.Search != "" {
-		search := fmt.Sprintf("%%%s%%", req.Search)
-		query.Where("name ILIKE ? OR role_id ILIKE ? OR address ILIKE ?", search, search, search)
+		search := fmt.Sprint("%" + strings.ToLower(req.Search) + "%")
+		query.Where("LOWER(em.name) Like ? OR LOWER(em.address) Like ? OR LOWER(CAST(em.role_id AS varchar)) Like ?", search, search, search)
+		log.Printf("%s", search)
 	}
 
 	Count, err := query.Count(ctx)

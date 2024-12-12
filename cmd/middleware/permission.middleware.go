@@ -78,7 +78,8 @@ func Permission(id int64) gin.HandlerFunc {
 			if ex {
 				c.Next()
 			} else {
-				response.Unauthorized(c, "Unauthorized")
+				response.BadRequest(c, errors.New("aaaaa"))
+				// response.Unauthorized(c, "Unauthorized")
 				c.Abort()
 				return
 			}

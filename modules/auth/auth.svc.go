@@ -40,7 +40,7 @@ func (s *AuthService) Login(ctx context.Context, loginBody authdto.LoginBody) (*
 	}
 
 	mapData := authdto.Details{
-		ID:      employee.ID,
+		Id:      employee.Id,
 		UserId:  employee.UserId,
 		Name:    employee.Name,
 		Images:  employee.Images,
@@ -54,7 +54,7 @@ func (s *AuthService) Login(ctx context.Context, loginBody authdto.LoginBody) (*
 
 	hmacSampleSecret := []byte(os.Getenv("MY_SECRET_KEY"))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userId": employee.ID,
+		"userId": employee.Id,
 		"exp":    time.Now().Add(time.Hour * 24).Unix(),
 		"data":   mapData,
 	})
@@ -158,7 +158,7 @@ func (s *AuthService) ExistMail(ctx context.Context, authUser *authdto.GoogleUse
 			Name:     authUser.Name,
 			Images:   authUser.Picture,
 			Address:  "",
-			Phone:    0,
+			Phone:    "",
 			Password: "",
 			RoleId:   1,
 		}
@@ -183,7 +183,7 @@ func (s *AuthService) ExistMail(ctx context.Context, authUser *authdto.GoogleUse
 	}
 
 	mapData := authdto.Details{
-		ID:      employee.ID,
+		Id:      employee.Id,
 		UserId:  employee.UserId,
 		Name:    employee.Name,
 		Images:  employee.Images,
@@ -193,7 +193,7 @@ func (s *AuthService) ExistMail(ctx context.Context, authUser *authdto.GoogleUse
 
 	hmacSampleSecret := []byte(os.Getenv("MY_SECRET_KEY"))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userId": employee.ID,
+		"userId": employee.Id,
 		"exp":    time.Now().Add(time.Hour * 24).Unix(),
 		"data":   mapData,
 	})
@@ -204,5 +204,4 @@ func (s *AuthService) ExistMail(ctx context.Context, authUser *authdto.GoogleUse
 	}
 
 	return tokenString, nil
-
 }
